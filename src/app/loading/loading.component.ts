@@ -1,21 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import {Observable} from 'rxjs';
+import { LoadingService } from './loading.service';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'loading',
+  selector: 'app-loading',
   templateUrl: './loading.component.html',
   styleUrls: ['./loading.component.css']
 })
-export class LoadingComponent implements OnInit {
-
-
-  constructor() {
-
-  }
-
-  ngOnInit() {
-
-  }
-
-
+export class LoadingComponent  {
+  constructor(public loading: LoadingService) {}
 }
