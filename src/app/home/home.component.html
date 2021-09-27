@@ -9,11 +9,17 @@
 
     <mat-tab-group>
       <mat-tab label="Beginners">
-        <app-course-card-list [courses]="observables.beginnerCourses"></app-course-card-list>
+        <app-course-card-list
+          [courses]="observables.beginnerCourses"
+          (coursesChanged)="onCoursesChanged()">
+        </app-course-card-list>
       </mat-tab>
 
       <mat-tab label="Advanced">
-        <app-course-card-list [courses]="observables.advancedCourses"></app-course-card-list>
+        <app-course-card-list
+          [courses]="observables.advancedCourses"
+          (coursesChanged)="onCoursesChanged()">
+        </app-course-card-list>
       </mat-tab>
     </mat-tab-group>
   </div>

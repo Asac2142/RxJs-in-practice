@@ -19,6 +19,10 @@ export class HomeComponent implements OnInit {
     this.loadCourses();
   }
 
+  onCoursesChanged() {
+    this.loadCourses();
+  }
+
   private loadCourses(): void {
     const courses$ = this.courseService
       .loadCourses()
