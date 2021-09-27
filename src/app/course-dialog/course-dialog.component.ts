@@ -1,50 +1,48 @@
-import {AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
-import {Course} from "../model/course";
-import {FormBuilder, Validators, FormGroup} from "@angular/forms";
+import { CourseService } from './../services/courses.service';
+import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Course } from '../model/course';
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
-import {catchError} from 'rxjs/operators';
-import {throwError} from 'rxjs';
 
 @Component({
-    selector: 'course-dialog',
-    templateUrl: './course-dialog.component.html',
-    styleUrls: ['./course-dialog.component.css']
+  selector: 'app-course-dialog',
+  templateUrl: './course-dialog.component.html',
+  styleUrls: ['./course-dialog.component.css'],
 })
-export class CourseDialogComponent implements AfterViewInit {
+export class CourseDialogComponent implements OnInit, AfterViewInit {
+  form: FormGroup;
+  course: Course;
 
-    form: FormGroup;
+  constructor(
+    private fb: FormBuilder,
+    private dialogRef: MatDialogRef<CourseDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) course: Course,
+    private courseService: CourseService
+  ) { this.course = course; }
 
-    course:Course;
+  ngOnInit(): void {
+    this.initForm();
+  }
 
-    constructor(
-        private fb: FormBuilder,
-        private dialogRef: MatDialogRef<CourseDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) course:Course) {
+  ngAfterViewInit() {}
 
-        this.course = course;
+  save() {
+    this.courseService
+      .save(+this.course.id, this.form.value)
+      .subscribe((value: any) => this.close(value));
+  }
 
-        this.form = fb.group({
-            description: [course.description, Validators.required],
-            category: [course.category, Validators.required],
-            releasedAt: [moment(), Validators.required],
-            longDescription: [course.longDescription,Validators.required]
-        });
+  close(value?: any) {
+    this.dialogRef.close(value || undefined);
+  }
 
-    }
-
-    ngAfterViewInit() {
-
-    }
-
-    save() {
-
-      const changes = this.form.value;
-
-    }
-
-    close() {
-        this.dialogRef.close();
-    }
-
+  private initForm(): void {
+    this.form = this.fb.group({
+      description: [this.course.description, Validators.required],
+      category: [this.course.category, Validators.required],
+      releasedAt: [moment(), Validators.required],
+      longDescription: [this.course.longDescription, Validators.required],
+    });
+  }
 }
