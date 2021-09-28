@@ -1,3 +1,4 @@
+import { LoadingService } from './../loading/loading.service';
 import { CourseService } from './../services/courses.service';
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -8,17 +9,18 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-course-dialog',
   templateUrl: './course-dialog.component.html',
-  styleUrls: ['./course-dialog.component.css'],
+  styleUrls: ['./course-dialog.component.css']
 })
 export class CourseDialogComponent implements OnInit, AfterViewInit {
   form: FormGroup;
   course: Course;
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) course: Course,
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CourseDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) course: Course,
-    private courseService: CourseService
+    private courseService: CourseService,
+    private loading: LoadingService
   ) { this.course = course; }
 
   ngOnInit(): void {
@@ -28,9 +30,10 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {}
 
   save() {
-    this.courseService
-      .save(+this.course.id, this.form.value)
-      .subscribe((value: any) => this.close(value));
+    const courseSaved$ = this.courseService.save(+this.course.id, this.form.value);
+    const loadingCourses$ = this.loading.showLoaderUntilCompleted(courseSaved$);
+
+    loadingCourses$.subscribe((value: any) => this.close(value));
   }
 
   close(value?: any) {
