@@ -4,7 +4,6 @@ import { map, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Course, sortCoursesBySeqNo } from '../model/course';
-import { MessageService } from '../messages/messages.service';
 
 @Injectable({
   providedIn: 'root'
@@ -30,13 +29,7 @@ export class StoreService {
   }
 
   saveCourses(courseId: number, changes: Partial<Course>): Observable<any> {
-    const courses = this.storeSubject.getValue();
-    const index = courses.findIndex((course) => +course.id === courseId);
-    const newCourse: Course = {...courses[index], ...changes};
-    const newCourses: Course[] = courses.slice();
-    newCourses[index] = newCourse;
-    this.storeSubject.next(newCourses);
-
+    this.saveCourseInMemory(courseId, changes);
     return this.courseService.save(courseId, changes);
   }
 
@@ -46,5 +39,15 @@ export class StoreService {
     this.loading.showLoaderUntilCompleted(courses$).pipe(
       tap((courses) => this.storeSubject.next(courses))
     ).subscribe();
+  }
+
+  private saveCourseInMemory(courseId: number, changes: Partial<Course>): void {
+    const courses = this.storeSubject.getValue();
+    const index = courses.findIndex((course) => +course.id === courseId);
+    const newCourse: Course = {...courses[index], ...changes};
+    const newCourses: Course[] = courses.slice();
+
+    newCourses[index] = newCourse;
+    this.storeSubject.next(newCourses);
   }
 }
