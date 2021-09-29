@@ -4,9 +4,10 @@ import { Course } from './../model/course';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MessageService } from '../messages/messages.service';
+import { Lesson } from '../model/lesson';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CourseService {
   constructor(
@@ -32,5 +33,21 @@ export class CourseService {
       }),
       shareReplay()
     );
+  }
+
+  searchLessons(search: string): Observable<Lesson[]> {
+    return this.http.get<Lesson[]>('/api/lessons', this.getSearchParams(search)).pipe(
+      map((response) => response['payload']),
+      shareReplay()
+    );
+  }
+
+  private getSearchParams(search: string): any {
+    return {
+      params: {
+        filter: search,
+        pageSize: '100',
+      },
+    };
   }
 }
