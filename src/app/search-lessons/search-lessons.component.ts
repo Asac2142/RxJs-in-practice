@@ -1,48 +1,28 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {Course} from '../model/course';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  startWith,
-  tap,
-  delay,
-  map,
-  concatMap,
-  switchMap,
-  withLatestFrom,
-  concatAll, shareReplay
-} from 'rxjs/operators';
-import {merge, fromEvent, Observable, concat} from 'rxjs';
-import {Lesson} from '../model/lesson';
-
+import { CourseService } from './../services/courses.service';
+import { Observable } from 'rxjs';
+import { Component } from '@angular/core';
+import { Lesson } from '../model/lesson';
 
 @Component({
-  selector: 'course',
+  selector: 'app-course',
   templateUrl: './search-lessons.component.html',
-  styleUrls: ['./search-lessons.component.css']
+  styleUrls: ['./search-lessons.component.css'],
 })
-export class SearchLessonsComponent implements OnInit {
+export class SearchLessonsComponent {
+  searchResult$!: Observable<Lesson[]>;
+  selectedLesson!: Lesson;
 
-  constructor() {
+  constructor(private coursesService: CourseService) {}
 
-
+  onSearch(input: string): void {
+    this.searchResult$ = this.coursesService.searchLessons(input);
   }
 
-  ngOnInit() {
-
-
+  onLessonSelected(lesson: Lesson): void {
+    this.selectedLesson = lesson;
   }
 
+  onBackToSearch(): void {
+    this.selectedLesson = undefined;
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
