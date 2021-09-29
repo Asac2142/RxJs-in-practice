@@ -1,1 +1,16 @@
-<p>lesson works!</p>
+<div class="lesson-detail">
+  <h3>{{ lessonSelected.description }}</h3>
+  <h5>Duration: {{ lessonSelected.duration }}</h5>
+  <ng-container *ngIf="lessonSelected?.videoId; else noVideo">
+    <iframe
+      [src]="('https://www.youtube.com/embed/' + lessonSelected?.videoId) | safeUrl"
+      frameborder="0"
+      width="400"
+      height="220"
+      allowfullscreen
+    ></iframe>
+  </ng-container>
+  <ng-template #noVideo>
+    <h4>No video available</h4>
+  </ng-template>
+</div>
