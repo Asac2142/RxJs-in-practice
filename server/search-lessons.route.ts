@@ -5,7 +5,7 @@ import { setTimeout } from 'timers';
 export function searchLessons(req: Request, res: Response) {
   let lessons: any;
   const queryParams = req.query;
-  const courseId = queryParams.courseId,
+  const courseId = +queryParams.courseId,
     filter = queryParams.filter || '',
     sortOrder = queryParams.sortOrder || 'asc',
     pageNumber = +queryParams.pageNumber || 0,
