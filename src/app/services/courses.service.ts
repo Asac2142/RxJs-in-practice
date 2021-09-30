@@ -7,7 +7,7 @@ import { MessageService } from '../messages/messages.service';
 import { Lesson } from '../model/lesson';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class CourseService {
   constructor(
@@ -25,6 +25,13 @@ export class CourseService {
     );
   }
 
+  loadLessonsByCourseId(courseId: number): Observable<Lesson[]> {
+    return this.http.get<Lesson[]>('/api/lessons', this.getLoadParams(courseId)).pipe(
+      map((response) => response['payload']),
+      shareReplay()
+    );
+  }
+
   save(courseId: number, changes: Partial<Course>): Observable<any> {
     return this.http.put(`/api/courses/${courseId}`, changes).pipe(
       catchError((error) => {
@@ -36,10 +43,18 @@ export class CourseService {
   }
 
   searchLessons(search: string): Observable<Lesson[]> {
-    return this.http.get<Lesson[]>('/api/lessons', this.getSearchParams(search)).pipe(
-      map((response) => response['payload']),
-      shareReplay()
-    );
+    return this.http
+      .get<Lesson[]>('/api/lessons', this.getSearchParams(search))
+      .pipe(
+        map((response) => response['payload']),
+        shareReplay()
+      );
+  }
+
+  loadCourseById(courseId: number): Observable<Course> {
+    return this.http
+      .get<Course>(`/api/courses/${courseId}`)
+      .pipe(shareReplay());
   }
 
   private getSearchParams(search: string): any {
@@ -48,6 +63,15 @@ export class CourseService {
         filter: search,
         pageSize: '100',
       },
+    };
+  }
+
+  private getLoadParams(courseId: number): any {
+    return {
+      params: {
+        pageSize: '10000',
+        courseId
+      }
     };
   }
 }
