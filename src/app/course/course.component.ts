@@ -1,54 +1,28 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {Course} from '../model/course';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  startWith,
-  tap,
-  delay,
-  map,
-  concatMap,
-  switchMap,
-  withLatestFrom,
-  concatAll, shareReplay, catchError
-} from 'rxjs/operators';
-import {merge, fromEvent, Observable, concat, throwError} from 'rxjs';
-import {Lesson} from '../model/lesson';
-
+import { CourseService } from './../services/courses.service';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { Course } from '../model/course';
+import { Lesson } from '../model/lesson';
 
 @Component({
-  selector: 'course',
+  selector: 'app-course',
   templateUrl: './course.component.html',
   styleUrls: ['./course.component.css']
 })
 export class CourseComponent implements OnInit {
+  course$: Observable<Course>;
+  lessons$: Observable<Lesson[]>;
 
-  course: Course;
-
-  lessons: Lesson[];
-
-  constructor(private route: ActivatedRoute) {
-
-
-  }
+  constructor(private route: ActivatedRoute, private courseService: CourseService) {}
 
   ngOnInit() {
-
-
-
+    this.loadCoursesById();
   }
 
-
+  private loadCoursesById(): void {
+    const courseId = +this.route.snapshot.paramMap.get('courseId');
+    this.course$ = this.courseService.loadCourseById(courseId);
+    this.lessons$ = this.courseService.loadLessonsByCourseId(courseId);
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
