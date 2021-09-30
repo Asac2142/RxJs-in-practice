@@ -8,7 +8,7 @@
     <h2>{{ data.course?.description }}</h2>
     <img class="course-thumbnail" [src]="data.course?.iconUrl" />
 
-    <table class="lessons-table mat-elevation-z7">
+    <table class="lessons-table mat-elevation-z7" *ngIf="data.lessons?.length; else loading">
       <thead>
         <th>#</th>
         <th>Description</th>
@@ -21,5 +21,8 @@
         <td class="duration-cell">{{ lesson.duration }}</td>
       </tr>
     </table>
+    <ng-template #loading>
+      <mat-spinner class="loading"></mat-spinner>
+    </ng-template>
   </div>
 </ng-container>
